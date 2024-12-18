@@ -9,7 +9,7 @@ public class AutoMode_Observation extends SequentialAuto {
     public AutoMode_Observation(){
         addCommands(
 
-                new StrafeCommand(0.2,6)
+                new StrafeCommand(-0.3,6)
 
 
 

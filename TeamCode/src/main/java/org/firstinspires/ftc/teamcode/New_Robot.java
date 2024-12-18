@@ -61,19 +61,18 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Omni Linear OpMode", group="Linear OpMode")
-public class BasicOmniOpMode_Linear extends LinearOpMode {
+@TeleOp()
+public class New_Robot extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DriveSubsystem m_drive;
-    private ArmSubsystem m_arm;
     private double multiplier=0.5;
 
     @Override
     public void runOpMode() {
         m_drive = new DriveSubsystem(hardwareMap);
-        m_arm = new ArmSubsystem(hardwareMap);
+
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
@@ -106,10 +105,10 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = axial + lateral - yaw;
-            double rightFrontPower = axial - lateral + yaw;
-            double leftBackPower   = axial - lateral - yaw;
-            double rightBackPower  = axial + lateral + yaw;
+            double leftFrontPower  = axial + lateral + yaw;
+            double rightFrontPower = axial - lateral - yaw;
+            double leftBackPower   = axial - lateral + yaw;
+            double rightBackPower  = axial + lateral - yaw;
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -147,27 +146,22 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 //            leftBackDrive.setPower(leftBackPower);
 //            rightBackDrive.setPower(rightBackPower);
             m_drive.setMotors(
-                    leftFrontPower * multiplier,
-                    leftBackPower * multiplier,
-                    rightFrontPower * multiplier,
-                    rightBackPower * multiplier
+                    leftFrontPower *multiplier,
+                    leftBackPower*multiplier,
+                    rightFrontPower*multiplier,
+                    rightBackPower*multiplier
             );
-            if(gamepad1.x){
-                m_arm.setPosition(100);
-            }else if(gamepad1.y){
-                m_arm.setPosition(4375);
-            }
             if (gamepad1.right_bumper) {
-                multiplier=1;
-            } else{
-                multiplier=0.5;
+                multiplier = 1;
+            }else if(gamepad1.left_bumper) {
+                    multiplier = 0.2;
+            }else{
+                    multiplier = 0.5;
             }
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.addData("arm posittion", m_arm.getPosition());
             telemetry.update();
 
         }
