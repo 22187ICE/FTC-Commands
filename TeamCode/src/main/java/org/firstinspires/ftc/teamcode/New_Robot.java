@@ -66,12 +66,15 @@ public class New_Robot extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
+    private ArmSubsystem m_arm;
     private DriveSubsystem m_drive;
+    private int ArmThing = 400;
     private double multiplier=0.5;
 
     @Override
     public void runOpMode() {
         m_drive = new DriveSubsystem(hardwareMap);
+        m_arm = new ArmSubsystem(hardwareMap);
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
@@ -153,10 +156,17 @@ public class New_Robot extends LinearOpMode {
             );
             if (gamepad1.right_bumper) {
                 multiplier = 1;
-            }else if(gamepad1.left_bumper) {
-                    multiplier = 0.2;
             }else{
                     multiplier = 0.5;
+            }
+            if(gamepad1.y){
+                ArmThing+=2000;
+                m_arm.setPosition(ArmThing);
+                telemetry.addData("moving up",m_arm.getPosition());
+                telemetry.addData("moving towards",m_arm.getTargetPosition());
+            }else if(gamepad1.a){
+                ArmThing-=2000;
+                m_arm.setPosition(ArmThing);
             }
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
