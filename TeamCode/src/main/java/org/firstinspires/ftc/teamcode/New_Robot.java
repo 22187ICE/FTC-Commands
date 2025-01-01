@@ -154,6 +154,8 @@ public class New_Robot extends LinearOpMode {
 //            rightFrontDrive.setPower(rightFrontPower);
 //            leftBackDrive.setPower(leftBackPower);
 //            rightBackDrive.setPower(rightBackPower);
+
+            // RB on gamepad1 boosts speed
             m_drive.setMotors(
                 leftFrontPower * multiplier,
                 leftBackPower * multiplier,
@@ -165,37 +167,42 @@ public class New_Robot extends LinearOpMode {
             } else {
                 multiplier = 0.75;
             }
-            if(gamepad2.a && m_arm.getPosition() > -400){
+
+            // X moves arm up, A moves arm down
+            if (gamepad2.x && m_arm.getPosition() > -400) {
                 m_arm.setPosition(ArmPosition);
                 ArmPosition -= 10;
-            }else if(gamepad2.x && m_arm.getPosition() < -10){
+            } else if (gamepad2.a && m_arm.getPosition() < -10) {
                 m_arm.setPosition(ArmPosition);
                 ArmPosition += 10;
             }
+
+            // Y extends slide, B retracts slide
             // We may be able to increase the limit a bit more if necessary
             // but -1600 may be the actual limit
-            if(gamepad2.y && SlidePosition > -1500){
+            if (gamepad2.y && SlidePosition > -1500) {
                 m_slide.setPosition(SlidePosition);
                 SlidePosition -= 25;
-
-            }
-            if(gamepad2.b && SlidePosition < -10){
+            } else if (gamepad2.b && SlidePosition < -10) {
                 m_slide.setPosition(SlidePosition);
                 SlidePosition += 25;
             }
-            if(gamepad2.right_bumper){
+
+            // Switch wrist position with RB and LB
+            if (gamepad2.right_bumper) {
                 m_wrist.setWrist(0.5);
-            }
-            else if(gamepad2.left_bumper){
+            } else if (gamepad2.left_bumper) {
                 m_wrist.setWrist(0);
             }
-            if(gamepad2.left_trigger > 0){
+
+            // LT opens claw, RT closes claw (???)
+            if (gamepad2.left_trigger > 0) {
                 m_claw.setIntake(0.75);
-            }
-            if(gamepad2.right_trigger > 0){
+            } else if (gamepad2.right_trigger > 0) {
                 m_claw.setIntake(0);
             }
 
+            // Printing out info to the driver station
             telemetry.addData("position", m_slide.getPosition());
             telemetry.addData("position", m_arm.getPosition());
             telemetry.addData("moving towards", m_arm.getTargetPosition());
