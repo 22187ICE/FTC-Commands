@@ -62,20 +62,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp()
-public class TeleOpOneController extends LinearOpMode {
+public class New_Robot extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DriveSubsystem m_drive;
     private ArmSubsystem m_arm;
-    private double multiplier=0.5;
-    private int ArmThing = 400;
-    private IntakeSubsystem m_intake;
+    private DriveSubsystem m_drive;
+    private SlideSubsystem m_slide;
+    private IntakeSubsystem m_wrist;
+    private IntakeSubsystem m_claw;
+    private int SlidePosition = 0;
+    private int ArmPosition = 0;
+    private double multiplier = 0.5;
+
     @Override
     public void runOpMode() {
         m_drive = new DriveSubsystem(hardwareMap);
         m_arm = new ArmSubsystem(hardwareMap);
-        m_intake = new IntakeSubsystem(hardwareMap);
+        m_slide = new SlideSubsystem(hardwareMap);
+        m_wrist = new IntakeSubsystem(hardwareMap);
+        m_claw = new IntakeSubsystem(hardwareMap);
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
@@ -103,15 +109,15 @@ public class TeleOpOneController extends LinearOpMode {
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double lateral = gamepad1.left_stick_x;
+            double yaw     = gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = axial + lateral - yaw;
-            double rightFrontPower = axial - lateral + yaw;
-            double leftBackPower   = axial - lateral - yaw;
-            double rightBackPower  = axial + lateral + yaw;
+            double leftFrontPower  = axial + lateral + yaw;
+            double rightFrontPower = axial - lateral - yaw;
+            double leftBackPower   = axial - lateral + yaw;
+            double rightBackPower  = axial + lateral - yaw;
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -148,45 +154,57 @@ public class TeleOpOneController extends LinearOpMode {
 //            rightFrontDrive.setPower(rightFrontPower);
 //            leftBackDrive.setPower(leftBackPower);
 //            rightBackDrive.setPower(rightBackPower);
+
+            // RB on gamepad1 boosts speed
             m_drive.setMotors(
-                    leftFrontPower *multiplier,
-                    leftBackPower*multiplier,
-                    rightFrontPower*multiplier,
-                    rightBackPower*multiplier
+                leftFrontPower * multiplier,
+                leftBackPower * multiplier,
+                rightFrontPower * multiplier,
+                rightBackPower * multiplier
             );
-            if(gamepad1.y & ArmThing <5100){
-                ArmThing+=20;
-                m_arm.setPosition(ArmThing);
-            }else if(gamepad1.a){
-                ArmThing-=20;
-                m_arm.setPosition(ArmThing);
+            // X moves arm up, A moves arm down
+            if (gamepad1.x && m_arm.getPosition() > -400) {
+                m_arm.setPosition(ArmPosition);
+                ArmPosition -= 10;
+            } else if (gamepad1.a && m_arm.getPosition() < -10) {
+                m_arm.setPosition(ArmPosition);
+                ArmPosition += 10;
             }
-//            if (gamepad1.right_bumper) {
-//                multiplier=1;
-//            } else{
-//                multiplier=0.5;
-//            }
+
+            // Y extends slide, B retracts slide
+            // We may be able to increase the limit a bit more if necessary
+            // but -1600 may be the actual limit
+            if (gamepad1.y && SlidePosition > -1500) {
+                m_slide.setPosition(SlidePosition);
+                SlidePosition -= 25;
+            } else if (gamepad1.b && SlidePosition < -10) {
+                m_slide.setPosition(SlidePosition);
+                SlidePosition += 25;
+            }
+
+            // Switch wrist position with RB and LB
+            if (gamepad1.right_bumper) {
+                m_wrist.setWrist(0.5);
+            } else if (gamepad1.left_bumper) {
+                m_wrist.setWrist(0);
+            }
+
+            // LT opens claw, RT closes claw (???)
+            if (gamepad1.left_trigger > 0) {
+                m_claw.setIntake(0.75);
+            } else if (gamepad1.right_trigger > 0) {
+                m_claw.setIntake(0);
+            }
+
+            // Printing out info to the driver station
+            telemetry.addData("position", m_slide.getPosition());
+            telemetry.addData("position", m_arm.getPosition());
+            telemetry.addData("moving towards", m_arm.getTargetPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.addData("arm posittion", m_arm.getPosition());
             telemetry.update();
-            if(gamepad1.b){
 
-                m_intake.setWrist(0.5);
-            }
-            else if(gamepad1.x){
-                m_intake.setWrist(1);
-            }
-            if(gamepad1.left_bumper){
-
-                m_intake.setIntake(-1);
-            }
-            else if(gamepad1.right_bumper){
-                m_intake.setIntake(1);
-            }else{
-                m_intake.setIntake(0);
-            }
         }
     }}
