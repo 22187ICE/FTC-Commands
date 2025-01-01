@@ -165,7 +165,7 @@ public class New_Robot extends LinearOpMode {
             if (gamepad1.right_bumper) {
                 multiplier = 1;
             } else {
-                multiplier = 0.75;
+                multiplier = 0.5;
             }
 
             // X moves arm up, A moves arm down
