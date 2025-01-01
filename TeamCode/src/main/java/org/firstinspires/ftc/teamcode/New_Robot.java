@@ -73,7 +73,7 @@ public class New_Robot extends LinearOpMode {
     private IntakeSubsystem m_claw;
     private int SlidePosition = 0;
     private int ArmPosition = 0;
-    private double multiplier=0.5;
+    private double multiplier = 0.5;
 
     @Override
     public void runOpMode() {
@@ -108,9 +108,9 @@ public class New_Robot extends LinearOpMode {
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   =  -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = gamepad1.left_stick_x;
+            double yaw     = gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -155,52 +155,50 @@ public class New_Robot extends LinearOpMode {
 //            leftBackDrive.setPower(leftBackPower);
 //            rightBackDrive.setPower(rightBackPower);
             m_drive.setMotors(
-                    leftFrontPower *multiplier,
-                    leftBackPower*multiplier,
-                    rightFrontPower*multiplier,
-                    rightBackPower*multiplier
+                leftFrontPower * multiplier,
+                leftBackPower * multiplier,
+                rightFrontPower * multiplier,
+                rightBackPower * multiplier
             );
             if (gamepad1.right_bumper) {
                 multiplier = 1;
-            }else{
-                    multiplier = 0.75;
+            } else {
+                multiplier = 0.75;
             }
-            if(gamepad2.a & m_arm.getPosition()>-400){
-
+            if(gamepad2.a && m_arm.getPosition() > -400){
                 m_arm.setPosition(ArmPosition);
-                ArmPosition-=10;
-            }else if(gamepad2.x & m_arm.getPosition()<-10){
+                ArmPosition -= 10;
+            }else if(gamepad2.x && m_arm.getPosition() < -10){
                 m_arm.setPosition(ArmPosition);
-                ArmPosition+=10;
+                ArmPosition += 10;
             }
             // We may be able to increase the limit a bit more if necessary
             // but -1600 may be the actual limit
-            if(gamepad2.y && SlidePosition >  -1500){
+            if(gamepad2.y && SlidePosition > -1500){
                 m_slide.setPosition(SlidePosition);
-                SlidePosition-=25;
+                SlidePosition -= 25;
 
             }
             if(gamepad2.b && SlidePosition < -10){
                 m_slide.setPosition(SlidePosition);
-                SlidePosition+=25;
+                SlidePosition += 25;
             }
             if(gamepad2.right_bumper){
-
                 m_wrist.setWrist(0.5);
             }
             else if(gamepad2.left_bumper){
                 m_wrist.setWrist(0);
             }
-            if(gamepad2.left_trigger>0){
+            if(gamepad2.left_trigger > 0){
                 m_claw.setIntake(0.75);
             }
-            if(gamepad2.right_trigger>0){
+            if(gamepad2.right_trigger > 0){
                 m_claw.setIntake(0);
             }
 
-            telemetry.addData("position",m_slide.getPosition());
-            telemetry.addData("position",m_arm.getPosition());
-            telemetry.addData("moving towards",m_arm.getTargetPosition());
+            telemetry.addData("position", m_slide.getPosition());
+            telemetry.addData("position", m_arm.getPosition());
+            telemetry.addData("moving towards", m_arm.getTargetPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
