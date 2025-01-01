@@ -70,9 +70,9 @@ public class New_Robot extends LinearOpMode {
     private DriveSubsystem m_drive;
     private SlideSubsystem m_slide;
     private IntakeSubsystem m_wrist;
-    private IntakeSubsystem m_intake;
-    private int ArmThing = 0;
-    private int ArmThingTwo = 0;
+    private IntakeSubsystem m_claw;
+    private int SlidePosition = 0;
+    private int ArmPosition = 0;
     private double multiplier=0.5;
 
     @Override
@@ -81,7 +81,7 @@ public class New_Robot extends LinearOpMode {
         m_arm = new ArmSubsystem(hardwareMap);
         m_slide = new SlideSubsystem(hardwareMap);
         m_wrist = new IntakeSubsystem(hardwareMap);
-        m_intake = new IntakeSubsystem(hardwareMap);
+        m_claw = new IntakeSubsystem(hardwareMap);
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
@@ -167,22 +167,22 @@ public class New_Robot extends LinearOpMode {
             }
             if(gamepad2.a & m_arm.getPosition()>-400){
 
-                m_arm.setPosition(ArmThingTwo);
-                ArmThingTwo-=10;
+                m_arm.setPosition(ArmPosition);
+                ArmPosition-=10;
             }else if(gamepad2.x & m_arm.getPosition()<-10){
-                m_arm.setPosition(ArmThingTwo);
-                ArmThingTwo+=10;
+                m_arm.setPosition(ArmPosition);
+                ArmPosition+=10;
             }
             // We may be able to increase the limit a bit more if necessary
             // but -1600 may be the actual limit
-            if(gamepad2.y && ArmThing >  -1500){
-                m_slide.setPosition(ArmThing);
-                ArmThing-=25;
+            if(gamepad2.y && SlidePosition >  -1500){
+                m_slide.setPosition(SlidePosition);
+                SlidePosition-=25;
 
             }
-            if(gamepad2.b && ArmThing < -10){
-                m_slide.setPosition(ArmThing);
-                ArmThing+=25;
+            if(gamepad2.b && SlidePosition < -10){
+                m_slide.setPosition(SlidePosition);
+                SlidePosition+=25;
             }
             if(gamepad2.right_bumper){
 
@@ -192,10 +192,10 @@ public class New_Robot extends LinearOpMode {
                 m_wrist.setWrist(0);
             }
             if(gamepad2.left_trigger>0){
-                m_intake.setIntake(0.75);
+                m_claw.setIntake(0.75);
             }
             if(gamepad2.right_trigger>0){
-                m_intake.setIntake(0);
+                m_claw.setIntake(0);
             }
 
             telemetry.addData("position",m_slide.getPosition());
