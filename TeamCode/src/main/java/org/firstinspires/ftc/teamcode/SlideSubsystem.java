@@ -19,7 +19,7 @@ public class SlideSubsystem {
     }
     public void setPosition(int position){
         slide.setTargetPosition(position);
-        slide.setVelocity(200);
+        slide.setVelocity(1500);
         slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public int getPosition(){

@@ -1,3 +1,4 @@
+
 /* Copyright (c) 2021 FIRST. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -28,9 +29,7 @@
  */
 
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -61,11 +60,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp()
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="thisone", group="Linear OpMode")
 public class TeleOp extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
-    private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime     runtime = new ElapsedTime();
     private ArmSubsystem m_arm;
     private DriveSubsystem m_drive;
     private SlideSubsystem m_slide;
@@ -74,6 +73,7 @@ public class TeleOp extends LinearOpMode {
     private int SlidePosition = 0;
     private int ArmPosition = 0;
     private double multiplier = 0.5;
+    private int i = 0;
 
     @Override
     public void runOpMode() {
@@ -105,6 +105,7 @@ public class TeleOp extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            i++;
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
@@ -169,12 +170,14 @@ public class TeleOp extends LinearOpMode {
             }
 
             // X moves arm up, A moves arm down
-            if (gamepad2.x && m_arm.getPosition() > -400) {
-                m_arm.setPosition(ArmPosition);
-                ArmPosition -= 10;
-            } else if (gamepad2.a && m_arm.getPosition() < -10) {
+            if (gamepad2.x && m_arm.getPosition() < 2000) {
+                telemetry.addData("moving arm up " , 0);
                 m_arm.setPosition(ArmPosition);
                 ArmPosition += 10;
+            } else if (gamepad2.a && m_arm.getPosition() > 10) {
+                telemetry.addData("moving arm down " , 0);
+                m_arm.setPosition(ArmPosition);
+                ArmPosition -= 10;
             }
 
             // Y extends slide, B retracts slide
@@ -183,28 +186,35 @@ public class TeleOp extends LinearOpMode {
             if (gamepad2.y && SlidePosition > -1500) {
                 m_slide.setPosition(SlidePosition);
                 SlidePosition -= 25;
+                telemetry.addData("extending slide" , 0);
             } else if (gamepad2.b && SlidePosition < -10) {
                 m_slide.setPosition(SlidePosition);
                 SlidePosition += 25;
+                telemetry.addData("retracting slide" , 0);
             }
 
             // Switch wrist position with RB and LB
             if (gamepad2.right_bumper) {
+                telemetry.addData("switching wrist" , 0.5);
                 m_wrist.setWrist(0.5);
             } else if (gamepad2.left_bumper) {
+                telemetry.addData("switching wrist" , 0);
                 m_wrist.setWrist(0);
             }
 
             // LT opens claw, RT closes claw (???)
             if (gamepad2.left_trigger > 0) {
+                telemetry.addData("open claw" , 0);
                 m_claw.setIntake(0.75);
             } else if (gamepad2.right_trigger > 0) {
+                telemetry.addData("close claw" , 0);
                 m_claw.setIntake(0);
             }
 
             // Printing out info to the driver station
-            telemetry.addData("position", m_slide.getPosition());
-            telemetry.addData("position", m_arm.getPosition());
+            telemetry.addData("position slide", m_slide.getPosition());
+            telemetry.addData("iteration", i);
+            telemetry.addData("position arm", m_arm.getPosition());
             telemetry.addData("moving towards", m_arm.getTargetPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());

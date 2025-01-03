@@ -197,8 +197,8 @@ public class TeleOpOneController extends LinearOpMode {
             }
 
             // Printing out info to the driver station
-            telemetry.addData("position", m_slide.getPosition());
-            telemetry.addData("position", m_arm.getPosition());
+            telemetry.addData("position slide", m_slide.getPosition());
+            telemetry.addData("position arm", m_arm.getPosition());
             telemetry.addData("moving towards", m_arm.getTargetPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
