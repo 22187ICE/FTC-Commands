@@ -170,29 +170,38 @@ public class TeleOp extends LinearOpMode {
             }
 
             // X moves arm up, A moves arm down
-            ArmPosition = m_arm.getPosition();
-            if (gamepad2.x && ArmPosition < 2250) {
-                telemetry.addData("moving arm up " , 0);
-                ArmPosition += 10;
-                m_arm.setPosition(ArmPosition);
-            } else if (gamepad2.a && ArmPosition > 10) {
-                ArmPosition -= 10;
-                telemetry.addData("moving arm down " , 0);
-                m_arm.setPosition(ArmPosition);
+            if (gamepad2.x || gamepad2.a) {
+                ArmPosition = m_arm.getPosition();
+                if (gamepad2.x && ArmPosition < 2250) {
+                    telemetry.addData("moving arm up " , 0);
+                    ArmPosition += 100;
+                    m_arm.setPosition(ArmPosition);
+                } else if (gamepad2.a && ArmPosition > 10) {
+                    ArmPosition -= 100;
+                    telemetry.addData("moving arm down " , 0);
+                    m_arm.setPosition(ArmPosition);
+                }
             }
 
             // Y extends slide, B retracts slide
             // We may be able to increase the limit a bit more if necessary
             // but -1600 may be the actual limit
-            SlidePosition = m_slide.getPosition();
-            if (gamepad2.y && SlidePosition > -1500) {
-                SlidePosition -= 25;
-                m_slide.setPosition(SlidePosition);
-                telemetry.addData("extending slide" , 0);
-            } else if (gamepad2.b && SlidePosition < -10) {
-                SlidePosition += 25;
-                m_slide.setPosition(SlidePosition);
-                telemetry.addData("retracting slide" , 0);
+            if (gamepad2.y || gamepad2.b) {
+                SlidePosition = m_slide.getPosition();
+                if (gamepad2.y && SlidePosition > -1475) {
+                    if(SlidePosition<-1000){
+                        SlidePosition -= 20;
+                    } else {
+                        SlidePosition -= 75;
+                    }
+
+                    m_slide.setPosition(SlidePosition);
+                    telemetry.addData("extending slide", 0);
+                } else if (gamepad2.b && SlidePosition < -10) {
+                    SlidePosition += 75;
+                    m_slide.setPosition(SlidePosition);
+                    telemetry.addData("retracting slide", 0);
+                }
             }
 
             // Switch wrist position with RB and LB
@@ -214,9 +223,9 @@ public class TeleOp extends LinearOpMode {
             }
 
             // Printing out info to the driver station
-            telemetry.addData("position slide", m_slide.getPosition());
+            telemetry.addData("position slide", SlidePosition);
             telemetry.addData("iteration", i);
-            telemetry.addData("position arm", m_arm.getPosition());
+            telemetry.addData("position arm", ArmPosition);
             telemetry.addData("moving towards", m_arm.getTargetPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
