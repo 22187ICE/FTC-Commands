@@ -176,6 +176,22 @@ public class TeleOp extends LinearOpMode {
             if (500 < m_arm.getPosition() && m_arm.getPosition() < 1000 && m_slide.getPosition() < 0.8 * ArmConstants.kSlideUpperLimitPosition) {
                 m_slide.setPosition((int)(0.8 * ArmConstants.kSlideUpperLimitPosition));
             }
+
+            //high basket position
+            if(gamepad1.x && ArmPosition > 300) {
+                m_claw.setIntake(0);
+                m_wrist.setWrist(ArmConstants.kWristHorizontalPosition);
+                m_arm.setPosition(2300);
+                m_slide.setPosition(-1450);
+            }
+            //pick up position off of floor
+            if(gamepad1.a){
+                m_arm.setPosition(300);
+                m_slide.setPosition(-500);
+                m_claw. setIntake(0.5);
+                m_wrist.setWrist(ArmConstants.kWristHorizontalPosition);
+            }
+
             // X moves arm up, A moves arm down
             if (gamepad2.x || gamepad2.a) {
                 ArmPosition = m_arm.getPosition();
@@ -217,7 +233,7 @@ public class TeleOp extends LinearOpMode {
                 m_wrist.setWrist(0.5);
             } else if (gamepad2.left_bumper) {
                 telemetry.addData("switching wrist" , 0);
-                m_wrist.setWrist(0.8);
+                m_wrist.setWrist(ArmConstants.kWristHorizontalPosition);
             }
 
             // LT opens claw, RT closes claw (???)
