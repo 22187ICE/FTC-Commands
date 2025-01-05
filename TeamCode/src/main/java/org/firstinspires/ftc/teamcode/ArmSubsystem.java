@@ -19,7 +19,7 @@ public class ArmSubsystem {
     }
     public void setPosition(int position){
         arm.setTargetPosition(position);
-        arm.setVelocity(1000);
+        arm.setVelocity(1300);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public int getPosition(){
