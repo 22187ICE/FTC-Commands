@@ -31,6 +31,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import Constants;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -171,17 +172,17 @@ public class TeleOp extends LinearOpMode {
 
             /* If arm position between 400 and 900, make sure the slide is short enough to stay
             inside the 42 inch limit */
-            if(400 < m_arm.getPosition() && m_arm.getPosition() < 900 && m_slide.getPosition() < -1200){
-                m_slide.setPosition(-1180);
+            if(400 < m_arm.getPosition() && m_arm.getPosition() < 900 && m_slide.getPosition() < 0.8 * kSlideUpperLimitPosition){
+                m_slide.setPosition(0.75 * kSlideUpperLimitPosition);
             }
             // X moves arm up, A moves arm down
             if (gamepad2.x || gamepad2.a) {
                 ArmPosition = m_arm.getPosition();
-                if (gamepad2.x && ArmPosition < 2325) {
+                if (gamepad2.x && ArmPosition < kArmUpperLimitPosition) {
                     telemetry.addData("moving arm up " , 0);
                     ArmPosition += 100;
                     m_arm.setPosition(ArmPosition);
-                } else if (gamepad2.a && ArmPosition > 10) {
+                } else if (gamepad2.a && ArmPosition > kArmLowerLimitPosition) {
                     ArmPosition -= 100;
                     telemetry.addData("moving arm down " , 0);
                     m_arm.setPosition(ArmPosition);
@@ -193,16 +194,15 @@ public class TeleOp extends LinearOpMode {
             // but -1600 may be the actual limit
             if (gamepad2.y || gamepad2.b) {
                 SlidePosition = m_slide.getPosition();
-                if (gamepad2.y && SlidePosition > -1475) {
-                    if(SlidePosition<-1000){
+                if (gamepad2.y && SlidePosition > kSlideUpperLimitPosition) {
+                    if(SlidePosition < 0.8 * kSlideUpperLimitPosition){
                         SlidePosition -= 20;
                     } else {
                         SlidePosition -= 75;
                     }
-
                     m_slide.setPosition(SlidePosition);
                     telemetry.addData("extending slide", 0);
-                } else if (gamepad2.b && SlidePosition < -10) {
+                } else if (gamepad2.b && SlidePosition < kSlideLowerLimitPosition) {
                     SlidePosition += 90;
                     m_slide.setPosition(SlidePosition);
                     telemetry.addData("retracting slide", 0);
