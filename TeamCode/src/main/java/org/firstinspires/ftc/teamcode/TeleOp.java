@@ -169,9 +169,10 @@ public class TeleOp extends LinearOpMode {
                 multiplier = 0.5;
             }
 
-            // If arm position between 400 and 900, make sure claw is left bumper
-            if(400<m_arm.getPosition() && m_arm.getPosition()<900){
-                m_wrist.setWrist(0.8);
+            /* If arm position between 400 and 900, make sure the slide is short enough to stay
+            inside the 42 inch limit */
+            if(400 < m_arm.getPosition() && m_arm.getPosition() < 900 && m_slide.getPosition() < -1200){
+                m_slide.setPosition(-1180);
             }
             // X moves arm up, A moves arm down
             if (gamepad2.x || gamepad2.a) {
