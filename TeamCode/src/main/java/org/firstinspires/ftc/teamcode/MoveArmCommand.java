@@ -6,11 +6,11 @@ public class MoveArmCommand extends Command {
     private int postion;
     private ArmSubsystem m_arm;
     public MoveArmCommand(int postion){
-        this.postion=postion;
+        this.postion = postion;
     }
     @Override
     public void start() {
-        m_arm=new ArmSubsystem(hardwareMap);
+        m_arm = new ArmSubsystem(hardwareMap);
     }
 
     @Override

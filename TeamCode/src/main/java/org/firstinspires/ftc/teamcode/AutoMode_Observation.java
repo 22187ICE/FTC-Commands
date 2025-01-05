@@ -8,12 +8,7 @@ import org.firstinspires.ftc.teamcode.command.SequentialAuto;
 public class AutoMode_Observation extends SequentialAuto {
     public AutoMode_Observation(){
         addCommands(
-
                 new StrafeCommand(-0.3,6)
-
-
-
-
         );
     }
 }
