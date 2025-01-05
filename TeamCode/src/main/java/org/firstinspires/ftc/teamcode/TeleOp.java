@@ -170,9 +170,9 @@ public class TeleOp extends LinearOpMode {
                 multiplier = 0.5;
             }
 
-            /* If arm position between 400 and 900, make sure the slide is short enough to stay
-            inside the 42 inch limit */
-            if(400 < m_arm.getPosition() && m_arm.getPosition() < 900 && m_slide.getPosition() < 0.8 * kSlideUpperLimitPosition){
+            /* If arm position is close to horizontal, make sure the slide is short enough to stay within the 42 inch limit
+            within the 42 inch limit */
+            if(500 < m_arm.getPosition() && m_arm.getPosition() < 1000 && m_slide.getPosition() < 0.8 * kSlideUpperLimitPosition){
                 m_slide.setPosition(0.75 * kSlideUpperLimitPosition);
             }
             // X moves arm up, A moves arm down
