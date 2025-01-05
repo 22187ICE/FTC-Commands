@@ -169,10 +169,14 @@ public class TeleOp extends LinearOpMode {
                 multiplier = 0.5;
             }
 
+            // If arm position between 400 and 900, make sure claw is left bumper
+            if(400<m_arm.getPosition() && m_arm.getPosition()<900){
+                m_wrist.setWrist(0.8);
+            }
             // X moves arm up, A moves arm down
             if (gamepad2.x || gamepad2.a) {
                 ArmPosition = m_arm.getPosition();
-                if (gamepad2.x && ArmPosition < 2250) {
+                if (gamepad2.x && ArmPosition < 2325) {
                     telemetry.addData("moving arm up " , 0);
                     ArmPosition += 100;
                     m_arm.setPosition(ArmPosition);
@@ -198,7 +202,7 @@ public class TeleOp extends LinearOpMode {
                     m_slide.setPosition(SlidePosition);
                     telemetry.addData("extending slide", 0);
                 } else if (gamepad2.b && SlidePosition < -10) {
-                    SlidePosition += 75;
+                    SlidePosition += 90;
                     m_slide.setPosition(SlidePosition);
                     telemetry.addData("retracting slide", 0);
                 }
@@ -210,7 +214,7 @@ public class TeleOp extends LinearOpMode {
                 m_wrist.setWrist(0.5);
             } else if (gamepad2.left_bumper) {
                 telemetry.addData("switching wrist" , 0);
-                m_wrist.setWrist(0);
+                m_wrist.setWrist(0.8);
             }
 
             // LT opens claw, RT closes claw (???)
@@ -221,6 +225,8 @@ public class TeleOp extends LinearOpMode {
                 telemetry.addData("close claw" , 0);
                 m_claw.setIntake(0);
             }
+
+
 
             // Printing out info to the driver station
             telemetry.addData("position slide", SlidePosition);
