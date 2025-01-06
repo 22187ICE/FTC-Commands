@@ -159,17 +159,18 @@ public class TeleOp extends LinearOpMode {
 //            rightBackDrive.setPower(rightBackPower);
 
             // RB on gamepad1 boosts speed
+            if (gamepad1.right_bumper) {
+                multiplier = 1;
+            } else {
+                multiplier = 0.5;
+            }
             m_drive.setMotors(
                 leftFrontPower * multiplier,
                 leftBackPower * multiplier,
                 rightFrontPower * multiplier,
                 rightBackPower * multiplier
             );
-            if (gamepad1.right_bumper) {
-                multiplier = 1;
-            } else {
-                multiplier = 0.5;
-            }
+
 
             /* If arm position is close to horizontal, make sure the slide is short enough to stay within the 42 inch limit
             within the 42 inch limit */
@@ -178,14 +179,14 @@ public class TeleOp extends LinearOpMode {
             }
 
             //high basket position
-            if(gamepad1.x && ArmPosition > 300) {
+            if (gamepad1.x && ArmPosition > 300) {
                 m_claw.setIntake(0);
                 m_wrist.setWrist(ArmConstants.kWristHorizontalPosition);
                 m_arm.setPosition(2300);
                 m_slide.setPosition(-1450);
             }
             //pick up position off of floor
-            if(gamepad1.a){
+            if (gamepad1.a) {
                 m_arm.setPosition(300);
                 m_slide.setPosition(-500);
                 m_claw. setIntake(0.5);
@@ -197,10 +198,14 @@ public class TeleOp extends LinearOpMode {
                 ArmPosition = m_arm.getPosition();
                 if (gamepad2.x && ArmPosition < ArmConstants.kArmUpperLimitPosition) {
                     telemetry.addData("moving arm up " , 0);
-                    ArmPosition += 100;
+                    if (ArmPosition < 0.8 * ArmConstants.kArmUpperLimitPosition) {
+                        ArmPosition += 130;
+                    } else {
+                        ArmPosition -= 40;
+                    }
                     m_arm.setPosition(ArmPosition);
                 } else if (gamepad2.a && ArmPosition > ArmConstants.kArmLowerLimitPosition) {
-                    ArmPosition -= 100;
+                    ArmPosition -= 130;
                     telemetry.addData("moving arm down " , 0);
                     m_arm.setPosition(ArmPosition);
                 }
