@@ -4,11 +4,14 @@ import org.firstinspires.ftc.teamcode.command.Command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class SequentialCommandGroup extends Command {
-    private int currentCommandIndex = -1;
-    private ArrayList<Command> commandList = new ArrayList<>();
-    private boolean finished = false;
+    protected int currentCommandIndex = -1;
+    protected ArrayList<Command> commandList = new ArrayList<>();
+    protected boolean finished = false;
     public SequentialCommandGroup(Command... commands) {
         addCommands(commands);
     }
@@ -59,9 +62,12 @@ public class SequentialCommandGroup extends Command {
     public void dispose() {
         for (Command command : commandList) command.dispose();
     }
-
+    public Collection<Command> getCommands() {
+        return Collections.unmodifiableCollection(commandList);
+    }
     @Override
     public boolean isFinished() {
         return finished;
     }
+
 }

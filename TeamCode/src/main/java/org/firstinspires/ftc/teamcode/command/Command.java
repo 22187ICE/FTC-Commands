@@ -13,17 +13,38 @@ import org.firstinspires.ftc.teamcode.command.group.ParallelDeadlineGroup;
 import org.firstinspires.ftc.teamcode.command.group.ParallelRaceGroup;
 import org.firstinspires.ftc.teamcode.command.group.SequentialCommandGroup;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
+import java.util.List;
 
 public abstract class Command {
     protected HardwareMap hardwareMap;
     protected Telemetry telemetry;
+    private final Set<Class<? extends Subsystem>> requiredSubsystems = new HashSet<>();
+
+    public void addRequirement(Class<? extends Subsystem> requirement) {
+        requiredSubsystems.add(requirement);
+    }
+    public void addRequirements(Class<? extends Subsystem>... requirements) {
+        for (Class<? extends Subsystem> requirement : requirements) addRequirement(requirement);
+    }
+    public Set<Class<? extends Subsystem>> getRequirements() {
+        return Collections.unmodifiableSet(requiredSubsystems);
+    }
     public void init() {}
+
     public abstract void start();
+
     public abstract void loop();
+
     public abstract void finish(boolean interrupted);
+
     public void dispose() {}
+
     public abstract boolean isFinished();
+
     public static void runCommand(Command command) {
         command.start();
         while (!command.isFinished()) {

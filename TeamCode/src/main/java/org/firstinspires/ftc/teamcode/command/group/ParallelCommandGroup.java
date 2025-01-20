@@ -1,17 +1,33 @@
 package org.firstinspires.ftc.teamcode.command.group;
 
 import org.firstinspires.ftc.teamcode.command.Command;
+import org.firstinspires.ftc.teamcode.command.Subsystem;
+import org.firstinspires.ftc.teamcode.command.builtin.EmptyCommand;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ParallelCommandGroup extends Command {
-    private Map<Command, Boolean> commandMap = new LinkedHashMap<>();
+    protected Map<Command, Boolean> commandMap = new LinkedHashMap<>();
+    protected boolean started = false;
     public ParallelCommandGroup(Command... commands) {
+        //signals that command has started
+        addCommands(new EmptyCommand());
         addCommands(commands);
     }
     public void addCommands(Command... commands) {
+        if (started) {
+            throw new IllegalStateException(
+                    "Commands cannot be added to a composition while it's running");
+        }
         for (Command c : commands) {
+            for (Class<? extends Subsystem> requirement : c.getRequirements()) {
+                if (getRequirements().contains(requirement)) throw new IllegalStateException("Cannot run multiple commands with the same requirements in parallel");
+                addRequirement(requirement);
+            }
             commandMap.put(c,false);
         }
     }
@@ -27,6 +43,7 @@ public class ParallelCommandGroup extends Command {
             entry.getKey().start();
             entry.setValue(true);
         }
+        started = true;
     }
 
     @Override
@@ -57,5 +74,8 @@ public class ParallelCommandGroup extends Command {
     @Override
     public boolean isFinished() {
         return !commandMap.containsValue(true);
+    }
+    public Collection<Command> getCommands() {
+        return Collections.unmodifiableCollection(commandMap.keySet());
     }
 }

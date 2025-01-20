@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.command.group;
 
 import org.firstinspires.ftc.teamcode.command.Command;
+import org.firstinspires.ftc.teamcode.command.Subsystem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class ParallelRaceGroup extends Command{
-    private ArrayList<Command> commandList = new ArrayList<>();
-    private boolean finished = true;
+    protected ArrayList<Command> commandList = new ArrayList<>();
+    protected boolean finished = true;
     public ParallelRaceGroup(Command... commands) {
         addCommands(commands);
     }
@@ -15,7 +18,13 @@ public class ParallelRaceGroup extends Command{
         if (!finished) {
             throw new IllegalStateException("Cannot add commands while group is running");
         }
-        commandList.addAll(Arrays.asList(commands));
+        for (Command c : commands) {
+            for (Class<? extends Subsystem> requirement : c.getRequirements()) {
+                if (getRequirements().contains(requirement)) throw new IllegalStateException("Cannot run multiple commands with the same requirements in parallel");
+                addRequirement(requirement);
+            }
+            commandList.add(c);
+        }
     }
     @Override
     public void init() {
@@ -51,5 +60,9 @@ public class ParallelRaceGroup extends Command{
     @Override
     public boolean isFinished() {
         return finished;
+    }
+
+    public Collection<Command> getCommands() {
+        return Collections.unmodifiableCollection(commandList);
     }
 }
