@@ -10,12 +10,22 @@ import org.firstinspires.ftc.teamcode.command.builtin.WaitCommand;
 public class AutoMode_Specimen_Observation extends SequentialAuto {
     public AutoMode_Specimen_Observation(){
         addCommands(
-                new HangSpecimenCommand(),
-                // move to observation area
-                new MoveArmCommand(-3300),
-                new MoveForwardCommand(-0.5,0.2),
-                new StrafeCommand(-0.2,2)
 
+
+
+
+
+
+
+
+
+
+//                new HangSpecimenCommand(),
+//                // move to observation area
+//                new MoveArmCommand(-3300),
+//                new MoveForwardCommand(-0.5,0.2),
+//                new StrafeCommand(-0.2,2)
+//
 
 //                new WristCommand(0.5),
 //                new MoveForwardCommand(0.5,0.3),

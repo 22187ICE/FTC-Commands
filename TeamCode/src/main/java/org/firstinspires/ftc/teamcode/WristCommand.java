@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.command.Command;
 
 public class WristCommand extends Command {
     private double position;
-    private IntakeSubsystem m_intake;
+    private IntakeSubsystem m_wrist;
 public WristCommand(double position){
 
     this.position = position;
@@ -12,8 +12,8 @@ public WristCommand(double position){
 }
     @Override
     public void start() {
-        m_intake = new IntakeSubsystem(hardwareMap);
-        m_intake.setWrist(position);
+        m_wrist = new IntakeSubsystem(hardwareMap);
+        m_wrist.setWrist(position);
 
     }
 
