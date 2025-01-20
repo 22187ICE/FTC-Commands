@@ -10,15 +10,11 @@ public class IntakeSubsystem {
     public IntakeSubsystem(HardwareMap hardwareMap){
         intake = hardwareMap.get(Servo.class,"intake");
         wrist = hardwareMap.get(Servo.class,"wrist");
-
     }
     public void setIntake(double position){
         intake.setPosition(position);
-
     }
     public void setWrist(double position){
-
         wrist.setPosition(position);
     }
-
 }

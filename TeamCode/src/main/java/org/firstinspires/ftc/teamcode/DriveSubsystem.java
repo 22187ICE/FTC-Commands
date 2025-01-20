@@ -14,7 +14,7 @@ public class DriveSubsystem {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBackDrive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFrontDrive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBackDrive");
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -43,6 +43,18 @@ public class DriveSubsystem {
     }
     public void setRightBack(double power){
         rightBackDrive.setPower(power);
+    }
+    public void drive(double axial, double lateral, double yaw) {
+        double leftFrontPower  = axial + lateral + yaw;
+        double rightFrontPower = axial - lateral - yaw;
+        double leftBackPower   = axial - lateral + yaw;
+        double rightBackPower  = axial + lateral - yaw;
+        setMotors(
+                leftFrontPower,
+                leftBackPower,
+                rightFrontPower,
+                rightBackPower
+        );
     }
 }
 
