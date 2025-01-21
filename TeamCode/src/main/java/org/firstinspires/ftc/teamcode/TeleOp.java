@@ -171,7 +171,6 @@ public class TeleOp extends LinearOpMode {
                 rightBackPower * multiplier
             );
 
-
             /* If arm position is close to horizontal, make sure the slide is short enough to stay within the 42 inch limit
             within the 42 inch limit */
             if (500 < m_arm.getPosition() && m_arm.getPosition() < 1000 && m_slide.getPosition() < 0.8 * ArmConstants.kSlideUpperLimitPosition) {
@@ -179,15 +178,15 @@ public class TeleOp extends LinearOpMode {
             }
 
             //high basket position
-            if (gamepad1.x && ArmPosition > 300) {
+            if (gamepad1.x && ArmPosition > 500) {
                 m_claw.setIntake(0);
                 m_wrist.setWrist(ArmConstants.kWristHorizontalPosition);
                 m_arm.setPosition(2300);
-                m_slide.setPosition(-1450);
+                m_slide.setPosition(-1475);
             }
             //pick up position off of floor
             if (gamepad1.a) {
-                m_arm.setPosition(300);
+                m_arm.setPosition(350);
                 m_slide.setPosition(-500);
                 m_claw. setIntake(0.5);
                 m_wrist.setWrist(ArmConstants.kWristHorizontalPosition);
@@ -201,11 +200,11 @@ public class TeleOp extends LinearOpMode {
                     if (ArmPosition < 0.8 * ArmConstants.kArmUpperLimitPosition) {
                         ArmPosition += 130;
                     } else {
-                        ArmPosition -= 40;
+                        ArmPosition -= 50;
                     }
                     m_arm.setPosition(ArmPosition);
                 } else if (gamepad2.a && ArmPosition > ArmConstants.kArmLowerLimitPosition) {
-                    ArmPosition -= 130;
+                    ArmPosition -= 100;
                     telemetry.addData("moving arm down " , 0);
                     m_arm.setPosition(ArmPosition);
                 }
@@ -244,7 +243,7 @@ public class TeleOp extends LinearOpMode {
             // LT opens claw, RT closes claw (???)
             if (gamepad2.left_trigger > 0) {
                 telemetry.addData("open claw" , 0);
-                m_claw.setIntake(0.75);
+                m_claw.setIntake(0.5);
             } else if (gamepad2.right_trigger > 0) {
                 telemetry.addData("close claw" , 0);
                 m_claw.setIntake(0);
