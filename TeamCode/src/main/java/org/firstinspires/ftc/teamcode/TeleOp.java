@@ -33,6 +33,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Constants.ArmConstants;
+import org.firstinspires.ftc.teamcode.command.Commands;
+import org.firstinspires.ftc.teamcode.command.executor.ParallelCommandExecutor;
+import org.firstinspires.ftc.teamcode.command.executor.trigger.TriggerGamepad;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -76,6 +79,8 @@ public class TeleOp extends LinearOpMode {
     private int ArmPosition = 0;
     private double multiplier = 0.5;
     private int i = 0;
+    private ParallelCommandExecutor executor;
+    private TriggerGamepad tGamepad1;
 
     @Override
     public void runOpMode() {
@@ -84,9 +89,14 @@ public class TeleOp extends LinearOpMode {
         m_slide = new SlideSubsystem(hardwareMap);
         m_wrist = new IntakeSubsystem(hardwareMap);
         m_claw = new IntakeSubsystem(hardwareMap);
+        executor = new ParallelCommandExecutor(hardwareMap,telemetry);
+        tGamepad1 = new TriggerGamepad(gamepad1,executor);
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-
+        tGamepad1.x.onTrue(Commands.sequence(
+                new MoveArmCommand(2300),
+                new MoveSlideCommand(-1400)
+        ));
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -179,12 +189,6 @@ public class TeleOp extends LinearOpMode {
             }
 
             //high basket position
-            if (gamepad1.x && ArmPosition > 300) {
-                m_claw.setIntake(0);
-                m_wrist.setWrist(ArmConstants.kWristHorizontalPosition);
-                m_arm.setPosition(2300);
-                m_slide.setPosition(-1450);
-            }
             //pick up position off of floor
             if (gamepad1.a) {
                 m_arm.setPosition(300);
@@ -201,7 +205,7 @@ public class TeleOp extends LinearOpMode {
                     if (ArmPosition < 0.8 * ArmConstants.kArmUpperLimitPosition) {
                         ArmPosition += 130;
                     } else {
-                        ArmPosition -= 40;
+                        ArmPosition += 40;
                     }
                     m_arm.setPosition(ArmPosition);
                 } else if (gamepad2.a && ArmPosition > ArmConstants.kArmLowerLimitPosition) {
@@ -228,6 +232,7 @@ public class TeleOp extends LinearOpMode {
                     telemetry.addData("extending slide", 0);
                 } else if (gamepad2.b && SlidePosition < ArmConstants.kSlideLowerLimitPosition) {
                     SlidePosition += 90;
+                    if (SlidePosition < ArmConstants.kSlideLowerLimitPosition) SlidePosition = (int) ArmConstants.kSlideLowerLimitPosition;
                     m_slide.setPosition(SlidePosition);
                     telemetry.addData("retracting slide", 0);
                 }
@@ -244,12 +249,13 @@ public class TeleOp extends LinearOpMode {
             // LT opens claw, RT closes claw (???)
             if (gamepad2.left_trigger > 0) {
                 telemetry.addData("open claw" , 0);
-                m_claw.setIntake(0.75);
+                m_claw.setIntake(0.5);
             } else if (gamepad2.right_trigger > 0) {
                 telemetry.addData("close claw" , 0);
                 m_claw.setIntake(0);
             }
-
+            executor.execute();
+            tGamepad1.update();
 
 
             // Printing out info to the driver station
@@ -264,4 +270,5 @@ public class TeleOp extends LinearOpMode {
             telemetry.update();
 
         }
+        executor.dispose();
     }}

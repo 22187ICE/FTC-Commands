@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.command.Command;
 import org.firstinspires.ftc.teamcode.command.Commands;
 import org.firstinspires.ftc.teamcode.command.SequentialAuto;
 import org.firstinspires.ftc.teamcode.command.builtin.WaitCommand;
+@Autonomous
 public class Sample_High_Basket_Auto extends SequentialAuto {
     public Sample_High_Basket_Auto() {
         addCommands(

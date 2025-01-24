@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.command.Commands;
 import org.firstinspires.ftc.teamcode.command.builtin.WaitCommand;
 import org.firstinspires.ftc.teamcode.command.group.SequentialCommandGroup;
