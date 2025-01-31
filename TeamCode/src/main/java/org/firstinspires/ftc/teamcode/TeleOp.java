@@ -73,8 +73,10 @@ public class TeleOp extends LinearOpMode {
     private ArmSubsystem m_arm;
     private DriveSubsystem m_drive;
     private SlideSubsystem m_slide;
+    private IntakeSubsystem m_hook;
     private IntakeSubsystem m_wrist;
     private IntakeSubsystem m_claw;
+    private IntakeSubsystem m_barToucher;
     private int SlidePosition = 0;
     private int ArmPosition = 0;
     private double multiplier = 0.5;
@@ -87,16 +89,17 @@ public class TeleOp extends LinearOpMode {
         m_drive = new DriveSubsystem(hardwareMap);
         m_arm = new ArmSubsystem(hardwareMap);
         m_slide = new SlideSubsystem(hardwareMap);
+        m_hook = new IntakeSubsystem(hardwareMap);
         m_wrist = new IntakeSubsystem(hardwareMap);
         m_claw = new IntakeSubsystem(hardwareMap);
+        m_barToucher = new IntakeSubsystem(hardwareMap);
         executor = new ParallelCommandExecutor(hardwareMap,telemetry);
         tGamepad1 = new TriggerGamepad(gamepad1,executor);
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        tGamepad1.x.onTrue(Commands.sequence(
-                new MoveArmCommand(2300),
-                new MoveSlideCommand(-1400)
-        ));
+//      tGamepad1.x.onTrue(
+//              new TouchBarCommand(1)
+//              );
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -114,7 +117,8 @@ public class TeleOp extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-
+        m_hook.setHook(0);
+        m_barToucher.setBarToucher(0);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             i++;
@@ -185,9 +189,15 @@ public class TeleOp extends LinearOpMode {
             /* If arm position is close to horizontal, make sure the slide is short enough to stay within the 42 inch limit
             within the 42 inch limit */
             if (500 < m_arm.getPosition() && m_arm.getPosition() < 1000 && m_slide.getPosition() < 0.8 * ArmConstants.kSlideUpperLimitPosition) {
-                m_slide.setPosition((int)(0.8 * ArmConstants.kSlideUpperLimitPosition));
+                m_slide.setPosition((int)(0.4 * ArmConstants.kSlideUpperLimitPosition));
             }
+            if(gamepad1.x){
+                m_wrist.setWrist(0.5);
+                m_claw. setIntake(0);
+                m_arm.setPosition(1300);
+                m_slide.setPosition(-1400);
 
+            }
             //high basket position
             //pick up position off of floor
             if (gamepad1.a) {
@@ -231,8 +241,10 @@ public class TeleOp extends LinearOpMode {
                     m_slide.setPosition(SlidePosition);
                     telemetry.addData("extending slide", 0);
                 } else if (gamepad2.b && SlidePosition < ArmConstants.kSlideLowerLimitPosition) {
-                    SlidePosition += 90;
-                    if (SlidePosition < ArmConstants.kSlideLowerLimitPosition) SlidePosition = (int) ArmConstants.kSlideLowerLimitPosition;
+                    SlidePosition += 75;
+//                    if (SlidePosition < ArmConstants.kSlideLowerLimitPosition) {
+//                        SlidePosition = (int) ArmConstants.kSlideLowerLimitPosition;
+//                    }
                     m_slide.setPosition(SlidePosition);
                     telemetry.addData("retracting slide", 0);
                 }
@@ -253,6 +265,10 @@ public class TeleOp extends LinearOpMode {
             } else if (gamepad2.right_trigger > 0) {
                 telemetry.addData("close claw" , 0);
                 m_claw.setIntake(0);
+            }
+            //hook controls
+            if(gamepad1.right_trigger>0 && gamepad1.left_trigger > 0 && gamepad1.right_bumper && gamepad1.left_bumper && m_arm.getPosition() > 1400){
+                m_hook.setHook(1);
             }
             executor.execute();
             tGamepad1.update();

@@ -14,6 +14,7 @@ public class ArmSubsystem {
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setTargetPosition(0);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setTargetPositionTolerance(20);
     }
     public void setPosition(int position){
@@ -30,7 +31,5 @@ public class ArmSubsystem {
     public boolean atPosition(){
         return !arm.isBusy();
     }
-    public void resetPosition(){
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
+
 }

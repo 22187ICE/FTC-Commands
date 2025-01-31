@@ -6,6 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class ResetArm extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        new ArmSubsystem(hardwareMap).resetPosition();
+//        new ArmSubsystem(hardwareMap).resetPosition();
     }
 }

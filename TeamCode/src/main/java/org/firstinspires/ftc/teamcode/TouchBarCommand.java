@@ -2,18 +2,18 @@ package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.command.Command;
 
-public class WristCommand extends Command {
+public class TouchBarCommand extends Command {
     private double position;
-    private IntakeSubsystem m_wrist;
-    public WristCommand(double position){
+    private IntakeSubsystem m_barToucher;
+    public TouchBarCommand(double position){
 
-    this.position = position;
+        this.position = position;
 
-}
+    }
     @Override
     public void start() {
-        m_wrist = new IntakeSubsystem(hardwareMap);
-        m_wrist.setWrist(position);
+        m_barToucher = new IntakeSubsystem(hardwareMap);
+        m_barToucher.setBarToucher(position);
 
     }
 
